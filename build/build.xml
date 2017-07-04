@@ -1,0 +1,76 @@
+<project name="odoo_service" default="build_odoo_service" basedir="..">
+
+       <property environment="env"/>
+        <property name="date" value="06/02/2017"/>
+        <property name="odoo_servicesrc" value="src" />
+		<property name="odoo_serviceclasses" value="build/classes"/>		     
+        <property name="odoo_servicelib" value="lib"/>		 
+		<property name="odooUintlib" value="lib"/>
+		<property name="odooziplib" value="C:/files/odoo/lib"/>
+        <property name="deprecation" value="${env.DEPRECATION}"/>
+        <property name="java_compiler_version" value="javac1.8"/>		
+		<property name="java_source_version" value="1.8"/>
+        <property name="java_source_version" value="1.8"/>
+		<property name="java_target_version" value="1.8"/>
+ 
+		<property name="product_version" value="1.0"/> 
+				
+        <!-- Should all tests fail if one does? -->
+        <property name="test.failonerror"        value="true"/>
+
+      
+    <!-- Construct compile classpath -->
+    <path id="compile.classpath">
+      <pathelement location="${classes}"/>
+      <fileset dir="${lib}">
+          <include name="*.jar"/>
+          <exclude name="odoo_service.jar"/>
+      </fileset>
+	</path>
+     
+<!-- odoo_service class path -->
+
+    <path id="odoo_service.classpath">
+      <pathelement location="${odoo_serviceclasses}"/>
+      <fileset dir="${odoo_servicelib}">
+          <include name="*.jar"/>
+          <exclude name="odoo_service.jar"/>		  
+      </fileset>
+    </path>
+	
+    
+ 
+<!-- =================================================================== -->
+    <!-- Create the odoo_service.jar file               -->
+    <!-- =================================================================== -->
+    <target name="odoo_service.jar" depends="compile_odoo_service" description="Create the jar file of odoo_service java classes">
+        <!--delete file="${odoo_servicelib}/odoo_service.jar"/>
+        <jar jarfile="${odoo_servicelib}/odoo_service.jar" basedir="${odoo_serviceclasses}" includes="com/**"/-->	
+		<delete file="${odooUintlib}/odoo_service.jar"/>
+		<jar jarfile="${odooUintlib}/odoo_service.jar" basedir="${odoo_serviceclasses}" includes="*/**"/>	
+		<jar jarfile="${odooziplib}/odoo_service.jar" basedir="${odoo_serviceclasses}" includes="*/**"/>			
+		<delete includeEmptyDirs="true" failonerror="no">
+            <fileset dir="${odoo_serviceclasses}"/>           
+        </delete>
+		
+    </target>
+	
+	<target name="compile_odoo_service" description="Compiling odoo_service Java files">
+      <mkdir dir="${odoo_serviceclasses}"/>
+      <javac compiler="${java_compiler_version}" source="${java_source_version}" target="${java_target_version}" srcdir="${odoo_servicesrc}" destdir="${odoo_serviceclasses}"  includeAntRuntime="false" debug="true" >
+            <classpath refid="odoo_service.classpath"/>
+     </javac>
+    </target>
+    <target name="clean_odoo_service" description="Clean odoo_service class and jar files">
+        <delete includeEmptyDirs="true" failonerror="no">
+            <fileset dir="${odoo_serviceclasses}"/>
+            <fileset file="${odoo_servicelib}/odoo_service.jar"/>
+        </delete>
+    </target>
+
+     
+    <target name="build_odoo_service" description="Build cf odoo_service" depends="compile_odoo_service,odoo_service.jar">     
+    </target>
+    
+
+</project>
